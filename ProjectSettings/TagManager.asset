@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - Wall
+  - Coin
+  - Bullet
+  - Text Score
+  - Text Bank
   layers:
   - Default
   - TransparentFX
