@@ -4,7 +4,7 @@ public class BulletMovement : MonoBehaviour
 {
     private GameObject playerInstance;
     private Vector3 normalizedVelocity;
-    private float speed = 1.0f;
+    private float speed = 20.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +14,7 @@ public class BulletMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += normalizedVelocity * speed;
+        transform.position += normalizedVelocity * speed * Time.deltaTime;
     }
 
     void OnTriggerEnter(Collider other)

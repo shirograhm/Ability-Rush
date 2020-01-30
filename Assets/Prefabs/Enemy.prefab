@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2080699464446581005}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2749775488714024078}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.25, z: 4.15}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_LocalPosition: {x: 0, y: 2, z: 4.15}
+  m_LocalScale: {x: 2, y: 1.5, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -107,8 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d323cb57fe742d0a5a2430106b3989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 6352589345680869977, guid: f29644be697c1410b912acb199dbb1d1,
-    type: 3}
   coinPrefab: {fileID: 2972067025877470777, guid: 8e408d9c5017dbf42a16717b018bdc18,
     type: 3}
 --- !u!54 &2080699464446581005

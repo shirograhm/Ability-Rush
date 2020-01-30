@@ -6,21 +6,36 @@ public class EnemySpawns : MonoBehaviour
 {
     public GameObject enemyPrefab;
 
-
-
-    private int level = 1;
+    private GameObject playerInstance;
     private Vector2 xBounds = new Vector2(64.5f, 74.5f);
     private Vector2 zBounds = new Vector2(30, 40);
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("SpawnEnemyWave", 10.0f, 30.0f);
+        playerInstance = GetGameObjectInstanceWithTag("Player");
+
+        InvokeRepeating("SpawnEnemyWave", 1.0f, ScoreManager.GetWaveCooldown());
+    }
+
+    GameObject GetGameObjectInstanceWithTag(string tagToUse)
+    {
+        GameObject[] allObjects = (GameObject[])FindObjectsOfType(typeof(GameObject));
+        // Iterate through all objects to find canvas
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.tag == tagToUse)
+            {
+                return obj;
+            }
+        }
+        return new GameObject();
     }
 
     void SpawnEnemyWave()
     {
-        int numberOfEnemies = (int)Mathf.Floor(1.2f * Mathf.Sqrt(100 * level)) - 5;
+        // Spawn function
+        int numberOfEnemies = (int)Mathf.Floor(2.5f * Mathf.Sqrt(100 * ScoreManager.getLevel()));
 
         for (int eCount = 0; eCount < numberOfEnemies; eCount++)
         {
@@ -46,8 +61,11 @@ public class EnemySpawns : MonoBehaviour
             // Set tags for bullet and player collision
             newEnemy.tag = "Enemy";
         }
-
-        level += 1;
+        
+        // Increment level on HUD
+        ScoreManager.incrementLevel();
+        // Set wave start time for HUD
+        ScoreManager.SetLastWaveStartTime(Time.time);
     }
 
     // Update is called once per frame

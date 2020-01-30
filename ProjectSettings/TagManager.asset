@@ -10,6 +10,25 @@ TagManager:
   - Bullet
   - Text Score
   - Text Bank
+  - Canvas
+  - Health Bar
+  - HP Fill
+  - CD Fill
+  - Wave Bar
+  - Wave Fill
+  - Enemy Mesh
+  - Text Wave Count
+  - Main Menu
+  - Begin Game
+  - Exit Game
+  - Continue
+  - Restart
+  - Final Text
+  - Multishot Icon
+  - Forcefield Icon
+  - Forcefield Cost
+  - Multishot Cost
+  - Sound Manager
   layers:
   - Default
   - TransparentFX

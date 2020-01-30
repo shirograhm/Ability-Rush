@@ -5,15 +5,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public GameObject bulletPrefab;
+    public GameObject SoundManager;
 
     // PLAYER STUFF
     private CharacterController controller;
     private float speed;
     private Vector3 facingDirection;
-    // BULLET STUFF
-    private float lastBulletShotTime = 0.0f;
-    private float shootCooldown = 0.5f;
-
 
     // Start is called before the first frame update
     void Start()
@@ -21,10 +18,11 @@ public class PlayerMovement : MonoBehaviour
         // Tag for enemy movement toward player
         tag = "Player";
         // Initialize other stuff
+        speed = 10.0f;
         controller = GetComponent<CharacterController>();
         facingDirection = new Vector3(0, 0, 1);
-        speed = 10.0f;
         Cursor.lockState = CursorLockMode.Locked;
+        ScoreManager.resetScores();
     }
 
     // Update is called once per frame
@@ -38,29 +36,60 @@ public class PlayerMovement : MonoBehaviour
         // Move player
         controller.SimpleMove(move.normalized * speed);
 
-        if (Input.GetButton("Fire1") && Time.time - lastBulletShotTime > shootCooldown)
+        // Check for firing bullets
+        if (Input.GetButton("Fire1") && ScoreManager.isGunReady())
         {
             Invoke("Shoot", 0f);
-            lastBulletShotTime = Time.time;
+            ScoreManager.SetLastShotTime(Time.time);
+            SoundManager.GetComponent<SoundManager>().playBulletShotSound();
+        }
+
+        // Check for upgrade usage
+        if(Input.GetButton("Fire2") && ScoreManager.canUseMultishot()) {
+            SoundManager.GetComponent<SoundManager>().playUpgradeSound();
+            
+            ScoreManager.incrementMultishotLevel();
+        }
+
+        // Check for forcefield usage
+        if(Input.GetButton("Fire3") && ScoreManager.canUseFreeze()) {
+            SoundManager.GetComponent<SoundManager>().playFreezeSound();
+            GetComponent<ParticleSystem>().Play();
+            
+            ScoreManager.useFreeze(transform.position);
         }
     }
 
     void Shoot()
     {
+        // Initial shot
         GameObject bulletCreated = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
         bulletCreated.GetComponent<BulletMovement>().SetInitialNormalizedVelocity(facingDirection);
         bulletCreated.GetComponent<BulletMovement>().SetPlayerObjectInstance(gameObject);
+
+        // Multishots
+        for(int i = 0; i < ScoreManager.getMultishotLevel(); i++) {
+            Vector3 variance = new Vector3(Random.Range(-0.2f, 0.2f), 0, Random.Range(-0.2f, 0.2f));
+
+            GameObject extraShot = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+            extraShot.GetComponent<BulletMovement>().SetInitialNormalizedVelocity(facingDirection + variance);
+            extraShot.GetComponent<BulletMovement>().SetPlayerObjectInstance(gameObject);
+        }
+
+
+        ScoreManager.changeScore(-2);
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            // TODO: Play OUCH sound effect
+            ScoreManager.changeHealth(-10);
+            ScoreManager.changeScore(-25);
 
-            GetComponent<ScoreManager>().changeHealth(-15);
-            GetComponent<ScoreManager>().changeScore(-25);
+            SoundManager.GetComponent<SoundManager>().playPlayerDamageSound();
         }
     }
 
@@ -71,19 +100,10 @@ public class PlayerMovement : MonoBehaviour
             // Remove coin
             Destroy(other.gameObject, 0f);
 
-            GetComponent<ScoreManager>().changeBank(1);
+            ScoreManager.changeCoins(1);
+            ScoreManager.changeScore(5);
+
+            SoundManager.GetComponent<SoundManager>().playCoinPickupSound();
         }
-    }
-
-    void FixedUpdate()
-    {
-        // float horizontalInput = Input.GetAxis("Horizontal");
-        // float verticalInput = Input.GetAxis("Vertical");
-
-        // Vector3 movement = new Vector3(horizontalInput, 0, verticalInput);
-
-        // Vector3 finalMovement = movement.normalized * speed;
-
-        // GetComponent<Rigidbody>().AddForce(finalMovement, ForceMode.Force);
     }
 }
